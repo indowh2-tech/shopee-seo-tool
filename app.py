@@ -24,7 +24,17 @@ st.markdown("""
 st.title("⚡ Shopee Market Intelligence & Live Scraper Engine")
 st.markdown("Software riset pasar interaktif untuk mendeteksi produk paling laris, viral, dan penjualan terbanyak berdasarkan kata kunci kustom.")
 
-# Sidebar Pilihan Menu Analisis Pasar
+# ==========================================
+# KOLOM INPUT KATA KUNCI UTAMA (DIATAS SIDEBAR)
+# ==========================================
+st.sidebar.header("🎯 Target Riset Utama")
+user_keyword = st.sidebar.text_input(
+    "Masukkan Kata Kunci Utama:", 
+    value="", 
+    placeholder="Ketik target riset (Cth: Dimmer AC, Kulit Pinus)..."
+)
+
+st.sidebar.markdown("---")
 st.sidebar.header("🔍 Pilihan Menu Analisis Pasar")
 analysis_mode = st.sidebar.selectbox(
     "Pilih Mode Analisis Produk",
@@ -34,15 +44,6 @@ analysis_mode = st.sidebar.selectbox(
         "3. Generator SEO Judul & Deskripsi Produk",
         "4. Simulasi Peringkat Pencarian Organik"
     ]
-)
-
-# Input Kata Kunci Utama (Dikosongkan terlebih dahulu sesuai permintaan)
-st.sidebar.markdown("---")
-st.sidebar.header("🎯 Input Target Riset")
-user_keyword = st.sidebar.text_input(
-    "Masukkan Kata Kunci Utama (Contoh: Dimmer AC, Kulit Pinus, Modul Step Down):", 
-    value="", 
-    placeholder="Ketik kata kunci di sini..."
 )
 
 # Fungsi Generator Link Shopee Realtime Berdasarkan Kata Kunci
@@ -58,10 +59,9 @@ if "1. Live Scraper" in analysis_mode:
     # Tombol Tarik Data (Hanya bisa optimal jika kata kunci sudah diisi)
     if st.button("🚀 Tarik Data Penjualan Terbanyak Sekarang"):
         if not user_keyword.strip():
-            st.warning("⚠️ **Perhatian:** Harap masukkan Kata Kunci Utama terlebih dahulu di kolom sidebar sebelah kiri sebelum menarik data!")
+            st.warning("⚠️ **Perhatian:** Kolom Kata Kunci Utama di sidebar masih kosong! Harap ketik kata kunci target Anda terlebih dahulu.")
         else:
             with st.spinner(f"Menghubungkan ke server marketplace & memindai produk terlaris untuk kata kunci: '{user_keyword}'..."):
-                # Simulasi data real-time berbasis kata kunci dinamis input user
                 shopee_url = generate_shopee_search_link(user_keyword)
                 
                 data_live = {
@@ -81,7 +81,7 @@ if "1. Live Scraper" in analysis_mode:
                 df_live = pd.DataFrame(data_live)
                 st.success(f"Berhasil menarik data pasar untuk kata kunci: **{user_keyword}**!")
                 
-                # Tampilkan tabel data dengan tautan interaktif ke aplikasi/web Shopee
+                # Tampilkan tabel data dengan tautan interaktif langsung membuka aplikasi/web Shopee
                 st.data_editor(
                     df_live,
                     column_config={
@@ -104,7 +104,7 @@ elif "2. Riset Kata Kunci" in analysis_mode:
     st.markdown("Menganalisis variasi kata kunci yang sering diketikkan pembeli untuk produk yang sedang Anda bidik.")
     
     if not user_keyword.strip():
-        st.warning("⚠️ Silakan ketik Kata Kunci Utama terlebih dahulu pada menu sidebar di sebelah kiri.")
+        st.warning("⚠️ Silakan isi Kata Kunci Utama terlebih dahulu pada bagian atas sidebar sebelah kiri.")
     else:
         st.write(f"Menampilkan hasil riset turunan untuk: **{user_keyword}**")
         keyword_data = {
@@ -126,7 +126,7 @@ elif "3. Generator SEO" in analysis_mode:
     st.header("🛠️ Otomasi Judul & Deskripsi Berbasis Data Riset")
     st.markdown("Meracik struktur judul dan deskripsi produk agar langsung terindeks optimal oleh algoritma pencarian marketplace.")
     
-    active_kw = user_keyword if user_keyword.strip() else "Masukkan Kata Kunci di Sidebar"
+    active_kw = user_keyword if user_keyword.strip() else "[Masukkan Kata Kunci di Sidebar]"
     brand_shop = st.text_input("Nama Brand / Toko Anda", "FN3 SAKURA")
     material_spec = st.text_input("Spesifikasi Unggulan Produk", "Komponen Premium & Siap Pakai")
     target_use = st.text_input("Fungsi / Kegunaan Utama", "Performa Stabil & Awet")
@@ -178,4 +178,4 @@ else:
             st.warning("⚠️ **STATUS: MODERATE.** Lengkapi parameter di atas agar performa pencarian produk semakin maksimal.")
 
 st.markdown("---")
-st.markdown("<p style='text-align: center; color: gray;'>Shopee Market Intelligence Engine v3.0 | Real-Time Marketplace Scraper & SEO Tool</p>", unsafe_allow_html=True)
+st.markdown("<p style='text-align: center; color: gray;'>Shopee Market Intelligence Engine v3.1 | Real-Time Marketplace Scraper & SEO Tool</p>", unsafe_allow_html=True)
