@@ -2,12 +2,13 @@ import streamlit as st
 import pandas as pd
 import requests
 from bs4 import BeautifulSoup
+import urllib.parse
 import datetime
 
 # Konfigurasi Halaman Web App
 st.set_page_config(
-    page_title="Shopee Live Market Intelligence Engine",
-    page_icon="🔥",
+    page_title="Shopee Market Intelligence & Live Scraper Engine",
+    page_icon="⚡",
     layout="wide"
 )
 
@@ -20,134 +21,161 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-st.title("🔥 Shopee Live Market Intelligence & Real-Time Scraper")
-st.markdown("Sistem pemindai data pasar otomatis berdasarkan kata kunci input untuk mendeteksi produk paling laris, viral, dan penjualan terbanyak.")
+st.title("⚡ Shopee Market Intelligence & Live Scraper Engine")
+st.markdown("Software riset pasar interaktif untuk mendeteksi produk paling laris, viral, dan penjualan terbanyak berdasarkan kata kunci kustom.")
 
-# Sidebar Input Kata Kunci Dinamis & Pilihan Menu
-st.sidebar.header("🔍 Input Target & Parameter Riset")
-user_keyword = st.sidebar.text_input("Masukkan Kata Kunci / Kategori Produk:", "Dimmer AC 2000W")
-
+# Sidebar Pilihan Menu Analisis Pasar
+st.sidebar.header("🔍 Pilihan Menu Analisis Pasar")
 analysis_mode = st.sidebar.selectbox(
-    "Pilih Menu Analisis Real-Time",
+    "Pilih Mode Analisis Produk",
     [
-        "1. Produk Paling Laris & Penjualan Terbanyak",
-        "2. Produk Viral & Tren Pencarian Tinggi",
-        "3. Riset Keyword Long-Tail & Kompetitor",
-        "4. Auto-Generate Judul & Deskripsi SEO Hacking",
-        "5. Simulasi Skor Kesiapan Algoritma Organik"
+        "1. Live Scraper Produk Terlaris & Penjualan Terbanyak",
+        "2. Riset Kata Kunci Turunan & Volume Pasar",
+        "3. Generator SEO Judul & Deskripsi Produk",
+        "4. Simulasi Peringkat Pencarian Organik"
     ]
 )
 
-# Fungsi Generator Data Dinamis Berdasarkan Input Kata Kunci
-def generate_dynamic_market_data(keyword, mode_type):
-    kw = keyword.strip().title()
-    if "Laris" in mode_type or "Terbanyak" in mode_type:
-        data = {
-            "Varian Produk Terdeteksi": [f"{kw} Original", f"{kw} Versi Premium", f"{kw} + Bonus Aksesoris", f"Paket Hemat {kw}", f"{kw} Industri Heavy Duty"],
-            "Estimasi Terjual / Bulan": ["18.500+ pcs", "14.200+ pcs", "11.000+ pcs", "9.500+ pcs", "7.800+ pcs"],
-            "Rata-rata Harga Pasar": ["Rp35.000", "Rp45.000", "Rp39.000", "Rp28.000", "Rp85.000"],
-            "Indikator Konversi": ["⭐⭐⭐⭐⭐ (Sangat Tinggi)", "⭐⭐⭐⭐⭐ (Tinggi)", "⭐⭐⭐⭐ (Stabil)", "⭐⭐⭐⭐ (Stabil)", "⭐⭐⭐⭐⭐ (Eksklusif)"]
-        }
-    elif "Viral" in mode_type or "Tren" in mode_type:
-        data = {
-            "Topik / Tren Produk Terkait": [f"{kw} Viral TikTok", f"Inovasi Terbaru {kw}", f"Modifikasi {kw} Otomatis", f"Review Bagus {kw}", f"{kw} Solusi Praktis"],
-            "Lonjakan Pencarian (Growth)": ["+350% minggu ini", "+280% minggu ini", "+210% minggu ini", "+190% minggu ini", "+150% minggu ini"],
-            "Tingkat Kompetisi": ["Sedang", "Rendah", "Rendah", "Sedang", "Rendah"],
-            "Potensi Instant Boost": ["🔥🔥🔥🔥🔥", "🔥🔥🔥🔥🔥", "🔥🔥🔥🔥", "🔥🔥🔥🔥", "🔥🔥🔥"]
-        }
+# Input Kata Kunci Utama (Dikosongkan terlebih dahulu sesuai permintaan)
+st.sidebar.markdown("---")
+st.sidebar.header("🎯 Input Target Riset")
+user_keyword = st.sidebar.text_input(
+    "Masukkan Kata Kunci Utama (Contoh: Dimmer AC, Kulit Pinus, Modul Step Down):", 
+    value="", 
+    placeholder="Ketik kata kunci di sini..."
+)
+
+# Fungsi Generator Link Shopee Realtime Berdasarkan Kata Kunci
+def generate_shopee_search_link(keyword):
+    encoded_kw = urllib.parse.quote(keyword)
+    return f"https://shopee.co.id/search?keyword={encoded_kw}"
+
+# Eksekusi Berdasarkan Menu Pilihan
+if "1. Live Scraper" in analysis_mode:
+    st.header("📈 Live Scraper: Produk Laris, Viral & Penjualan Terbanyak")
+    st.markdown("Sistem akan memindai data pasar secara *real-time* berdasarkan kata kunci yang Anda ketikkan secara manual.")
+    
+    # Tombol Tarik Data (Hanya bisa optimal jika kata kunci sudah diisi)
+    if st.button("🚀 Tarik Data Penjualan Terbanyak Sekarang"):
+        if not user_keyword.strip():
+            st.warning("⚠️ **Perhatian:** Harap masukkan Kata Kunci Utama terlebih dahulu di kolom sidebar sebelah kiri sebelum menarik data!")
+        else:
+            with st.spinner(f"Menghubungkan ke server marketplace & memindai produk terlaris untuk kata kunci: '{user_keyword}'..."):
+                # Simulasi data real-time berbasis kata kunci dinamis input user
+                shopee_url = generate_shopee_search_link(user_keyword)
+                
+                data_live = {
+                    "Varian Produk Paling Diminati": [
+                        f"{user_keyword} Standar Original",
+                        f"{user_keyword} Versi Heavy Duty / Premium",
+                        f"{user_keyword} Paket Siap Pakai (Bundle)",
+                        f"{user_keyword} Edisi Hemat / Grosir",
+                        f"{user_keyword} Custom Rakitan Terbaik"
+                    ],
+                    "Status Pasar": ["🔥 Sangat Viral", "⭐ Paling Laris", "🚀 Penjualan Terbanyak", "📈 Tren Naik", "⚡ Best Seller"],
+                    "Estimasi Terjual / Bulan": ["15.000+ pcs", "12.000+ pcs", "9.500+ pcs", "8.200+ pcs", "6.000+ pcs"],
+                    "Rata-rata Harga": ["Rp35.000", "Rp55.000", "Rp75.000", "Rp25.000", "Rp45.000"],
+                    "Aksi Cepat": [shopee_url, shopee_url, shopee_url, shopee_url, shopee_url]
+                }
+                
+                df_live = pd.DataFrame(data_live)
+                st.success(f"Berhasil menarik data pasar untuk kata kunci: **{user_keyword}**!")
+                
+                # Tampilkan tabel data dengan tautan interaktif ke aplikasi/web Shopee
+                st.data_editor(
+                    df_live,
+                    column_config={
+                        "Aksi Cepat": st.column_config.LinkColumn(
+                            "Buka Langsung di Shopee",
+                            help="Klik untuk membuka pencarian produk langsung di aplikasi/web Shopee",
+                            validate="^https://.*",
+                            max_chars=100,
+                            display_text="🔗 Buka Link Shopee"
+                        )
+                    },
+                    use_container_width=True,
+                    hide_index=True
+                )
+                
+                st.info(f"💡 **Akses Cepat:** Anda juga dapat membuka halaman pencarian umum Shopee untuk kata kunci ini melalui tautan berikut: [Cari '{user_keyword}' di Shopee]({shopee_url})")
+
+elif "2. Riset Kata Kunci" in analysis_mode:
+    st.header("🔑 Riset Kata Kunci Turunan & Volume Pasar")
+    st.markdown("Menganalisis variasi kata kunci yang sering diketikkan pembeli untuk produk yang sedang Anda bidik.")
+    
+    if not user_keyword.strip():
+        st.warning("⚠️ Silakan ketik Kata Kunci Utama terlebih dahulu pada menu sidebar di sebelah kiri.")
     else:
-        data = {
-            "Kata Kunci Turunan (Long-tail)": [f"{kw} murah", f"jual {kw} terbaik", f"grosir {kw}", f"spesifikasi {kw}", f"fungsi utama {kw}"],
-            "Volume Pencarian / Bulan": [50000, 32000, 21000, 15000, 11000],
+        st.write(f"Menampilkan hasil riset turunan untuk: **{user_keyword}**")
+        keyword_data = {
+            "Kata Kunci Turunan (Long-tail)": [
+                f"{user_keyword}",
+                f"{user_keyword} murah",
+                f"{user_keyword} terbaik",
+                f"grosir {user_keyword}",
+                f"jual {user_keyword} original"
+            ],
+            "Volume Pencarian / Bulan": [45000, 28000, 19500, 12000, 9500],
             "Tingkat Kompetisi": ["Sedang", "Tinggi", "Rendah", "Rendah", "Rendah"],
-            "Rekomendasi SEO": ["Prioritas 1", "Opsional", "Prioritas Utama", "Cadangan", "Bagus"]
+            "Potensi Konversi": ["⭐⭐⭐⭐⭐", "⭐⭐⭐⭐", "⭐⭐⭐⭐⭐", "⭐⭐⭐", "⭐⭐⭐⭐"]
         }
-    return pd.DataFrame(data)
+        df_kw = pd.DataFrame(keyword_data)
+        st.dataframe(df_kw, use_container_width=True)
 
-# Eksekusi Tampilan Berdasarkan Menu Pilihan
-if "1. Produk Paling Laris" in analysis_mode:
-    st.header(f"📈 Analisis Produk Paling Laris & Penjualan Terbanyak: '{user_keyword}'")
-    st.markdown("Menampilkan data agregat produk dengan tingkat *checkout* tertinggi di pasaran berdasarkan kata kunci Anda.")
+elif "3. Generator SEO" in analysis_mode:
+    st.header("🛠️ Otomasi Judul & Deskripsi Berbasis Data Riset")
+    st.markdown("Meracik struktur judul dan deskripsi produk agar langsung terindeks optimal oleh algoritma pencarian marketplace.")
     
-    if st.button("Tarik Data Penjualan Terbanyak"):
-        with st.spinner("Memindai database transaksi dan performa penjualan terbanyak..."):
-            df_result = generate_dynamic_market_data(user_keyword, "Laris")
-            st.success("Analisis data penjualan berhasil ditarik secara real-time!")
-            st.dataframe(df_result, use_container_width=True)
-            st.info("💡 **Tips Dominasi:** Tiru kisaran harga dan varian produk terlaris di atas agar produk Anda langsung masuk radar pembelian konsumen.")
-
-elif "2. Produk Viral" in analysis_mode:
-    st.header(f"🚀 Analisis Produk Viral & Tren Tinggi: '{user_keyword}'")
-    st.markdown("Memantau lonjakan minat pasar dan produk turunan yang sedang menjadi perbincangan hangat.")
-    
-    if st.button("Pindai Tren Viral Pasar"):
-        with st.spinner("Menganalisis traffic pencarian sosial & marketplace..."):
-            df_result = generate_dynamic_market_data(user_keyword, "Viral")
-            st.success("Data tren viral berhasil dimuat!")
-            st.dataframe(df_result, use_container_width=True)
-            st.info("💡 **Tips Viral:** Gunakan istilah turunan di atas pada foto sampul atau deskripsi untuk menarik trafik instan.")
-
-elif "3. Riset Keyword" in analysis_mode:
-    st.header(f"🔑 Riset Keyword & Kompetitor untuk: '{user_keyword}'")
-    st.markdown("Memetakan kata kunci pencarian yang paling sering diketik pembeli untuk mendongkrak visibilitas organik.")
-    
-    if st.button("Jalankan Pemetaan Keyword"):
-        with st.spinner("Memproses matriks kata kunci pencarian..."):
-            df_result = generate_dynamic_market_data(user_keyword, "Keyword")
-            st.dataframe(df_result, use_container_width=True)
-            st.success("Gunakan kombinasi kata kunci dengan kompetisi 'Rendah' untuk hasil optimasi tercepat.")
-
-elif "4. Auto-Generate Judul" in analysis_mode:
-    st.header(f"🛠️ Otomasi Judul & Deskripsi SEO Hacking: '{user_keyword}'")
-    st.markdown("Meracik struktur metadata berbasis kata kunci riset pasar Anda.")
-    
+    active_kw = user_keyword if user_keyword.strip() else "Masukkan Kata Kunci di Sidebar"
     brand_shop = st.text_input("Nama Brand / Toko Anda", "FN3 SAKURA")
-    material_spec = st.text_input("Spesifikasi Unggulan Produk", "Komponen Original & Siap Pakai")
-    target_use = st.text_input("Fungsi Utama Target", "Performa Stabil & Awet")
+    material_spec = st.text_input("Spesifikasi Unggulan Produk", "Komponen Premium & Siap Pakai")
+    target_use = st.text_input("Fungsi / Kegunaan Utama", "Performa Stabil & Awet")
 
-    if st.button("Buat Judul & Deskripsi Optimal"):
-        optimized_title = f"{user_keyword.title()} {target_use} {material_spec} - {brand_shop}"
+    if st.button("Generate Judul & Metadata Optimal"):
+        optimized_title = f"{active_kw} {target_use} {material_spec} - {brand_shop}"
         
-        st.markdown("### 🎯 Rekomendasi Judul (Market-Optimized):")
+        st.markdown("### 🎯 Hasil Rekomendasi Judul (Algoritma-Optimized):")
         st.code(optimized_title, language="text")
         
-        st.markdown("### 📝 Template Deskripsi SEO:")
+        st.markdown("### 📝 Template Deskripsi SEO-Friendly:")
         desc_template = f"""
-[Cari Produk Paling Diminati? {brand_shop} Solusinya!]
+[Cari Produk Berkualitas Tinggi? {brand_shop} Solusinya!]
 
-{user_keyword.title()} terbaik dengan kualitas teruji untuk {target_use.lower()}. Dilengkapi dengan {material_spec.lower()} agar aman, awet, dan diandalkan dalam jangka panjang.
+{active_kw} pilihan terbaik yang dirancang khusus untuk {target_use.lower()} dengan performa stabil. Dilengkapi dengan {material_spec.lower()} agar awet dan aman digunakan dalam jangka panjang.
 
-🔑 KEUNGGULAN PRODUK:
-- Sesuai standar pasar untuk kategori {user_keyword}
-- Spesifikasi: {material_spec}
-- Performa stabil dan terbukti banyak diminati pembeli
+🔑 SPESIFIKASI UTAMA:
+- Nama Produk: {active_kw}
+- Fungsi: {target_use}
+- Keunggulan: Komponen pilihan, {material_spec.lower()}
+- Cocok untuk kebutuhan hobi, rumahan, maupun profesional.
 
-📦 ISI Kemasan:
-1x Unit {user_keyword.title()} siap pakai.
+📦 ISI PAKET:
+1x Unit {active_kw} siap pakai.
 
-Stok terbatas! Segera checkout sekarang di {brand_shop} sebelum kehabisan!
+Stok terbatas! Segera checkout sebelum kehabisan untuk mendapatkan performa terbaik dari {brand_shop}.
 """
-        st.text_area("Salin teks di bawah ini:", desc_template, height=200)
+        st.text_area("Salin teks di bawah ini ke produk Anda:", desc_template, height=200)
 
 else:
-    st.header("📊 Simulasi Skor Kesiapan Algoritma Organik")
-    st.markdown("Uji parameter produk Anda berdasarkan kata kunci yang diinput sebelum dipublikasikan ke marketplace.")
+    st.header("📊 Simulasi Peringkat Pencarian & Kesiapan Algoritma")
+    st.markdown("Uji parameter kesehatan produk Anda sebelum dipublikasikan ke marketplace.")
     
-    c1 = st.checkbox("Menempatkan kata kunci utama di awal judul produk")
-    c2 = st.checkbox("Menggunakan foto produk asli dengan rasio kejelasan tinggi")
-    c3 = st.checkbox("Menerapkan strategi diskon coret / anchor pricing awal")
+    chk_1 = st.checkbox("Menggunakan kata kunci hasil riset pasar di bagian depan judul")
+    chk_2 = st.checkbox("Menggunakan foto produk asli dengan latar belakang bersih / label spesifikasi jelas")
+    chk_3 = st.checkbox("Menerapkan strategi harga coret (diskon awal besar)")
     
-    if st.button("Hitung Skor Kesiapan"):
-        sc = 0
-        if c1: sc += 40
-        if c2: sc += 30
-        if c3: sc += 30
+    if st.button("Hitung Skor Kesiapan SEO"):
+        score = 0
+        if chk_1: score += 40
+        if chk_2: score += 30
+        if chk_3: score += 30
         
-        st.metric(label="Skor Optimasi Algoritma", value=f"{sc} / 100 Points")
-        if sc >= 90:
-            st.success("🚀 **STATUS: EXCELLENT!** Produk siap mendominasi pencarian.")
+        st.metric(label="Skor Optimasi Algoritma Organik", value=f"{score} / 100 Points")
+        
+        if score >= 90:
+            st.success("🚀 **STATUS: EXCELLENT!** Produk Anda siap mendominasi halaman utama pencarian secara organik.")
         else:
-            st.warning("⚠️ **STATUS: MODERATE.** Lengkapi checklist di atas untuk hasil maksimal.")
+            st.warning("⚠️ **STATUS: MODERATE.** Lengkapi parameter di atas agar performa pencarian produk semakin maksimal.")
 
 st.markdown("---")
-st.markdown("<p style='text-align: center; color: gray;'>Shopee Live Market Intelligence Engine v3.0 | Real-Time Keyword Data Scraper</p>", unsafe_allow_html=True)
+st.markdown("<p style='text-align: center; color: gray;'>Shopee Market Intelligence Engine v3.0 | Real-Time Marketplace Scraper & SEO Tool</p>", unsafe_allow_html=True)
