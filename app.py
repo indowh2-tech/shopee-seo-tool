@@ -25,17 +25,19 @@ st.title("⚡ Shopee Market Intelligence & Live Scraper Engine")
 st.markdown("Software riset pasar interaktif untuk mendeteksi produk paling laris, viral, dan penjualan terbanyak berdasarkan kata kunci kustom.")
 
 # ==========================================
-# KOLOM INPUT KATA KUNCI UTAMA (DIATAS SIDEBAR)
+# KOLOM INPUT KATA KUNCI UTAMA (PASTI MUNCUL DI ATAS SIDEBAR)
 # ==========================================
-st.sidebar.header("🎯 Target Riset Utama")
-user_keyword = st.sidebar.text_input(
-    "Masukkan Kata Kunci Utama:", 
-    value="", 
-    placeholder="Ketik target riset (Cth: Dimmer AC, Kulit Pinus)..."
-)
-
 st.sidebar.markdown("---")
-st.sidebar.header("🔍 Pilihan Menu Analisis Pasar")
+st.sidebar.subheader("🎯 Masukkan Kata Kunci Target")
+user_keyword = st.sidebar.text_input(
+    label="Kata Kunci Utama (Wajib Diisi):",
+    value="",
+    placeholder="Cth: Dimmer AC, Kulit Pinus, Modul..."
+)
+st.sidebar.markdown("---")
+
+# Menu Pilihan Analisis Pasar
+st.sidebar.subheader("🔍 Pilihan Menu Analisis")
 analysis_mode = st.sidebar.selectbox(
     "Pilih Mode Analisis Produk",
     [
@@ -54,12 +56,18 @@ def generate_shopee_search_link(keyword):
 # Eksekusi Berdasarkan Menu Pilihan
 if "1. Live Scraper" in analysis_mode:
     st.header("📈 Live Scraper: Produk Laris, Viral & Penjualan Terbanyak")
-    st.markdown("Sistem akan memindai data pasar secara *real-time* berdasarkan kata kunci yang Anda ketikkan secara manual.")
+    st.markdown("Sistem akan memindai data pasar secara *real-time* berdasarkan kata kunci yang Anda ketikkan di sidebar.")
     
-    # Tombol Tarik Data (Hanya bisa optimal jika kata kunci sudah diisi)
+    # Tampilkan status kata kunci yang sedang dimasukkan
+    if user_keyword.strip():
+        st.info(f"Target Kata Kunci Aktif: **{user_keyword}**")
+    else:
+        st.warning("⚠️ Kolom kata kunci di sidebar sebelah kiri masih kosong. Silakan ketik kata kunci terlebih dahulu.")
+    
+    # Tombol Tarik Data
     if st.button("🚀 Tarik Data Penjualan Terbanyak Sekarang"):
         if not user_keyword.strip():
-            st.warning("⚠️ **Perhatian:** Kolom Kata Kunci Utama di sidebar masih kosong! Harap ketik kata kunci target Anda terlebih dahulu.")
+            st.error("❌ Gagal menarik data! Harap isi terlebih dahulu kolom Kata Kunci Utama di sidebar sebelah kiri.")
         else:
             with st.spinner(f"Menghubungkan ke server marketplace & memindai produk terlaris untuk kata kunci: '{user_keyword}'..."):
                 shopee_url = generate_shopee_search_link(user_keyword)
@@ -97,11 +105,11 @@ if "1. Live Scraper" in analysis_mode:
                     hide_index=True
                 )
                 
-                st.info(f"💡 **Akses Cepat:** Anda juga dapat membuka halaman pencarian umum Shopee untuk kata kunci ini melalui tautan berikut: [Cari '{user_keyword}' di Shopee]({shopee_url})")
+                st.markdown(f"🔗 **Link Pencarian Langsung Shopee:** [Klik untuk mencari '{user_keyword}' di Shopee]({shopee_url})")
 
 elif "2. Riset Kata Kunci" in analysis_mode:
     st.header("🔑 Riset Kata Kunci Turunan & Volume Pasar")
-    st.markdown("Menganalisis variasi kata kunci yang sering diketikkan pembeli untuk produk yang sedang Anda bidik.")
+    st.markdown("Menganalisis variasi kata kunci yang sering diketikkan pembeli berdasarkan target riset Anda.")
     
     if not user_keyword.strip():
         st.warning("⚠️ Silakan isi Kata Kunci Utama terlebih dahulu pada bagian atas sidebar sebelah kiri.")
@@ -126,7 +134,7 @@ elif "3. Generator SEO" in analysis_mode:
     st.header("🛠️ Otomasi Judul & Deskripsi Berbasis Data Riset")
     st.markdown("Meracik struktur judul dan deskripsi produk agar langsung terindeks optimal oleh algoritma pencarian marketplace.")
     
-    active_kw = user_keyword if user_keyword.strip() else "[Masukkan Kata Kunci di Sidebar]"
+    active_kw = user_keyword if user_keyword.strip() else "[Kata Kunci Belum Diisi di Sidebar]"
     brand_shop = st.text_input("Nama Brand / Toko Anda", "FN3 SAKURA")
     material_spec = st.text_input("Spesifikasi Unggulan Produk", "Komponen Premium & Siap Pakai")
     target_use = st.text_input("Fungsi / Kegunaan Utama", "Performa Stabil & Awet")
@@ -178,4 +186,4 @@ else:
             st.warning("⚠️ **STATUS: MODERATE.** Lengkapi parameter di atas agar performa pencarian produk semakin maksimal.")
 
 st.markdown("---")
-st.markdown("<p style='text-align: center; color: gray;'>Shopee Market Intelligence Engine v3.1 | Real-Time Marketplace Scraper & SEO Tool</p>", unsafe_allow_html=True)
+st.markdown("<p style='text-align: center; color: gray;'>Shopee Market Intelligence Engine v3.2 | Real-Time Marketplace Scraper & SEO Tool</p>", unsafe_allow_html=True)
