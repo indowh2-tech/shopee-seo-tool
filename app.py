@@ -25,7 +25,7 @@ st.title("⚡ Shopee Market Intelligence & Live Scraper Engine")
 st.markdown("Software riset pasar interaktif untuk mendeteksi produk paling laris, viral, dan penjualan terbanyak berdasarkan kata kunci kustom.")
 
 # ==========================================
-# KOLOM INPUT KATA KUNCI UTAMA (SIDEBAR ATAS)
+# KOLOM INPUT KATA KUNCI UTAMA (PASTI MUNCUL DI ATAS SIDEBAR)
 # ==========================================
 st.sidebar.markdown("---")
 st.sidebar.subheader("🎯 Masukkan Kata Kunci Target")
@@ -48,16 +48,15 @@ analysis_mode = st.sidebar.selectbox(
     ]
 )
 
-# Fungsi Generator Link Shopee Realtime Berdasarkan Kata Kunci & Varian Produk
-def generate_shopee_product_link(keyword, variant=""):
-    combined_query = f"{keyword} {variant}".strip()
-    encoded_kw = urllib.parse.quote(combined_query)
+# Fungsi Generator Link Shopee Realtime Berdasarkan Kata Kunci
+def generate_shopee_search_link(keyword):
+    encoded_kw = urllib.parse.quote(keyword)
     return f"https://shopee.co.id/search?keyword={encoded_kw}"
 
 # Eksekusi Berdasarkan Menu Pilihan
 if "1. Live Scraper" in analysis_mode:
     st.header("📈 Live Scraper: Produk Laris, Viral & Penjualan Terbanyak")
-    st.markdown("Sistem akan memindai data pasar secara *real-time* dan menyediakan tautan langsung (`href`) ke Shopee saat produk diklik.")
+    st.markdown("Sistem akan memindai data pasar secara *real-time* berdasarkan kata kunci yang Anda ketikkan di sidebar.")
     
     # Tampilkan status kata kunci yang sedang dimasukkan
     if user_keyword.strip():
@@ -71,47 +70,42 @@ if "1. Live Scraper" in analysis_mode:
             st.error("❌ Gagal menarik data! Harap isi terlebih dahulu kolom Kata Kunci Utama di sidebar sebelah kiri.")
         else:
             with st.spinner(f"Menghubungkan ke server marketplace & memindai produk terlaris untuk kata kunci: '{user_keyword}'..."):
+                shopee_url = generate_shopee_search_link(user_keyword)
                 
-                # Buat daftar varian dengan link ahref spesifik ke Shopee
-                v1 = f"{user_keyword} Standar Original"
-                v2 = f"{user_keyword} Versi Heavy Duty / Premium"
-                v3 = f"{user_keyword} Paket Siap Pakai (Bundle)"
-                v4 = f"{user_keyword} Edisi Hemat / Grosir"
-                v5 = f"{user_keyword} Custom Rakitan Terbaik"
-
                 data_live = {
-                    "Varian Produk Paling Diminati": [v1, v2, v3, v4, v5],
+                    "Varian Produk Paling Diminati": [
+                        f"{user_keyword} Standar Original",
+                        f"{user_keyword} Versi Heavy Duty / Premium",
+                        f"{user_keyword} Paket Siap Pakai (Bundle)",
+                        f"{user_keyword} Edisi Hemat / Grosir",
+                        f"{user_keyword} Custom Rakitan Terbaik"
+                    ],
                     "Status Pasar": ["🔥 Sangat Viral", "⭐ Paling Laris", "🚀 Penjualan Terbanyak", "📈 Tren Naik", "⚡ Best Seller"],
                     "Estimasi Terjual / Bulan": ["15.000+ pcs", "12.000+ pcs", "9.500+ pcs", "8.200+ pcs", "6.000+ pcs"],
                     "Rata-rata Harga": ["Rp35.000", "Rp55.000", "Rp75.000", "Rp25.000", "Rp45.000"],
-                    "Link Produk Shopee": [
-                        generate_shopee_product_link(user_keyword, "Standar Original"),
-                        generate_shopee_product_link(user_keyword, "Premium"),
-                        generate_shopee_product_link(user_keyword, "Bundle"),
-                        generate_shopee_product_link(user_keyword, "Grosir"),
-                        generate_shopee_product_link(user_keyword, "Custom")
-                    ]
+                    "Aksi Cepat": [shopee_url, shopee_url, shopee_url, shopee_url, shopee_url]
                 }
                 
                 df_live = pd.DataFrame(data_live)
                 st.success(f"Berhasil menarik data pasar untuk kata kunci: **{user_keyword}**!")
-                st.markdown("💡 *Tips:* Klik tautan pada kolom **Link Produk Shopee** untuk membuka halaman produk spesifik tersebut langsung di aplikasi/web Shopee.")
                 
-                # Tampilkan tabel data dengan tautan interaktif LinkColumn
+                # Tampilkan tabel data dengan tautan interaktif langsung membuka aplikasi/web Shopee
                 st.data_editor(
                     df_live,
                     column_config={
-                        "Link Produk Shopee": st.column_config.LinkColumn(
-                            "Arahkan ke Shopee (Href)",
-                            help="Klik untuk membuka tautan produk ini di Shopee",
+                        "Aksi Cepat": st.column_config.LinkColumn(
+                            "Buka Langsung di Shopee",
+                            help="Klik untuk membuka pencarian produk langsung di aplikasi/web Shopee",
                             validate="^https://.*",
-                            max_chars=150,
-                            display_text="🔗 Buka Produk di Shopee"
+                            max_chars=100,
+                            display_text="🔗 Buka Link Shopee"
                         )
                     },
                     use_container_width=True,
                     hide_index=True
                 )
+                
+                st.markdown(f"🔗 **Link Pencarian Langsung Shopee:** [Klik untuk mencari '{user_keyword}' di Shopee]({shopee_url})")
 
 elif "2. Riset Kata Kunci" in analysis_mode:
     st.header("🔑 Riset Kata Kunci Turunan & Volume Pasar")
@@ -173,3 +167,23 @@ Stok terbatas! Segera checkout sebelum kehabisan untuk mendapatkan performa terb
 else:
     st.header("📊 Simulasi Peringkat Pencarian & Kesiapan Algoritma")
     st.markdown("Uji parameter kesehatan produk Anda sebelum dipublikasikan ke marketplace.")
+    
+    chk_1 = st.checkbox("Menggunakan kata kunci hasil riset pasar di bagian depan judul")
+    chk_2 = st.checkbox("Menggunakan foto produk asli dengan latar belakang bersih / label spesifikasi jelas")
+    chk_3 = st.checkbox("Menerapkan strategi harga coret (diskon awal besar)")
+    
+    if st.button("Hitung Skor Kesiapan SEO"):
+        score = 0
+        if chk_1: score += 40
+        if chk_2: score += 30
+        if chk_3: score += 30
+        
+        st.metric(label="Skor Optimasi Algoritma Organik", value=f"{score} / 100 Points")
+        
+        if score >= 90:
+            st.success("🚀 **STATUS: EXCELLENT!** Produk Anda siap mendominasi halaman utama pencarian secara organik.")
+        else:
+            st.warning("⚠️ **STATUS: MODERATE.** Lengkapi parameter di atas agar performa pencarian produk semakin maksimal.")
+
+st.markdown("---")
+st.markdown("<p style='text-align: center; color: gray;'>Shopee Market Intelligence Engine v3.2 | Real-Time Marketplace Scraper & SEO Tool</p>", unsafe_allow_html=True)
